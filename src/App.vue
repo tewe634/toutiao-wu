@@ -1,15 +1,14 @@
 <template>
   <div>
-    黑马头条
-    <span class="toutiao toutiao-wode"></span>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  methods: {
+  }
 }
 </script>
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>
