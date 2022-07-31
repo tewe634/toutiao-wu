@@ -97,7 +97,7 @@ export default {
           data: { data: token }
         } = await getLogin(datas)
         this.$store.commit('SEND_TOKEN', token)
-        this.$router.push('/profile')
+        this.$router.push('/my')
         this.$toast.success('登入成功')
       } catch (error) {
         const status = error.response.data
