@@ -64,4 +64,8 @@ export default {
     font-size: 0.5067rem;
   }
 }
+.toutiao {
+  position: relative;
+  top: .1867rem;
+}
 </style>

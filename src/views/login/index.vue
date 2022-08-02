@@ -55,7 +55,7 @@
 
 <script>
 import { phoneRoules, codeRoules } from './rules'
-import { getLogin, getCode } from '@/api/user'
+import { getLogin, getCode } from '@/api'
 export default {
   name: 'login',
   data() {
@@ -89,17 +89,21 @@ export default {
       //  - axios封装的error
       //  - error.response.data是服务端返回的数据
       //  - error.response.status 是服务端返回的状态码
-      const datas = { mobile: this.mobile, code: this.code }
       // 加载提示
       this.loading()
       try {
+        const data = { mobile: this.mobile, code: this.code }
+
         const {
           data: { data: token }
-        } = await getLogin(datas)
+        } = await getLogin(data)
+
         this.$store.commit('SEND_TOKEN', token)
         this.$router.push('/my')
         this.$toast.success('登入成功')
+        console.log(2)
       } catch (error) {
+        console.dir(error)
         const status = error.response.data
         let message = '请重新登入'
         if (status === 400) {

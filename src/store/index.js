@@ -8,11 +8,12 @@ export default new Vuex.Store({
     // 至少返回一个空对象
     // JSON.parse(localStorage.getItem('HEIMA_TOUTIAO_TOKEN'))
     // tokenObj: storage.get('HEIMA_TOUTIAO_TOKEN') || {}
-    tokenObj: getToken()
+    tokenObj: getToken() || {}
   },
   getters: {},
   mutations: {
     SEND_TOKEN(state, payload) {
+      console.log(1)
       state.tokenObj = payload
       // localStorage.setItem('HEIMA_TOUTIAO_TOKEN', JSON.stringify(payload))
       // storage.set('HEIMA_TOUTIAO_TOKEN', payload)
