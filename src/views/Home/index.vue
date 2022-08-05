@@ -11,36 +11,116 @@
       <van-tab :title="item.name" v-for="item in channel" :key="item.id">
         <ArtickList :id="item.id"></ArtickList>
       </van-tab>
-      <span class="toutiao toutiao-gengduo1"></span>
+      <span class="toutiao toutiao-gengduo1" @click="show = true"></span>
     </van-tabs>
+    <!-- 弹出层 -->
+    <van-popup
+      v-model="show"
+      position="bottom"
+      :style="{ height: '100%' }"
+      closeable
+      close-icon-position="top-left"
+    >
+      <Channel
+        :channel="channel"
+        @change-active="active = $event"
+        @delectChannel="delectChannel"
+        @addChannel="addChannel"
+      ></Channel>
+      <!-- $event在自定义事件中相当于接收传递的第一个参数 -->
+    </van-popup>
   </div>
 </template>
 
 <script>
+import {
+  delectChannel,
+  addChannel,
+  SetMyChannelToLocal,
+  getMyChannelBylocal
+} from '@/api'
 import { getChannel } from '@/api/channel'
 import ArtickList from './ArtickList/index.vue'
+import Channel from './Channel/index.vue'
 export default {
   name: 'home',
   data() {
     return {
       active: 0,
-      channel: []
+      channel: [],
+      show: false
     }
   },
-  components: { ArtickList },
+  components: { ArtickList, Channel },
+  computed: {
+    isLoding() {
+      return !!this.$store.state.tokenObj.token
+    }
+  },
   methods: {
+    insertChannel() {
+      if (this.isLoding) {
+        this.getChannel()
+      } else {
+        const mychannel = getMyChannelBylocal()
+        if (mychannel.length !== 1) {
+          this.channel = mychannel
+        } else {
+          this.getChannel()
+        }
+      }
+    },
     async getChannel() {
       try {
+        // 判断是否登入赋值
         const { data } = await getChannel()
         this.channel = data.data.channels
       } catch (error) {
         console.dir(error)
         this.$toast.fail('获取失败，请重新刷新')
       }
+    },
+    // 自定义事件删除我的频道数据
+    async delectChannel(id) {
+      this.$toast.loading({
+        message: '加载中...',
+        forbidClick: true
+      })
+      try {
+        // 判断登入状态
+        if (this.isLoding) {
+          await delectChannel(id)
+        } else {
+          // 剩余数据存到浏览器
+          SetMyChannelToLocal(this.channel.filter((i) => i.id !== id))
+        }
+        this.channel = this.channel.filter((i) => i.id !== id)
+        this.$toast.success('删除频道成功~')
+      } catch (error) {
+        this.$toast.fail('删除频道失败')
+      }
+    },
+    // 添加-
+    async addChannel(item) {
+      this.$toast.loading({
+        message: '加载中...',
+        forbidClick: true
+      })
+      try {
+        if (this.isLoding) {
+          await addChannel(item.id, this.channel.length)
+        } else {
+          SetMyChannelToLocal([...this.channel, item])
+        }
+        this.channel.push(item)
+        this.$toast.success('添加频道成功~')
+      } catch (error) {
+        this.$toast.fail('添加频道失败')
+      }
     }
   },
   created() {
-    this.getChannel()
+    this.insertChannel()
   }
 }
 </script>
@@ -108,7 +188,7 @@ export default {
   text-align: center;
   opacity: 0.6;
   border-bottom: 1px solid #eee;
-  z-index: 9999;
+  z-index: 99;
   background-color: #fff;
   &::after {
     content: '';
