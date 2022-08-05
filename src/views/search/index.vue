@@ -9,6 +9,7 @@
         class="search"
         @search="onSearch"
         @focus="onFocus"
+        @cancel="$router.back()"
       />
       <!-- 动态组件显示历史建议结果 -->
       <component :is="componentName" :keywords="keywords"></component>
