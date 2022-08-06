@@ -27,17 +27,20 @@ export default {
   data() {
     return {
       keywords: '',
-      isShowSearch: false // 判断是否点击回车
+      isShowSearch: false, // 判断是否点击回车
+      resultList: []
     }
   },
   methods: {
     // 搜索时触发
     onSearch() {
       this.isShowSearch = true
+      this.resultList.push(this.keywords)
+      localStorage.setItem('results', JSON.stringify(this.resultList))
     },
     // 获取焦点
     onFocus() {
-    // 先将结果依赖的变量改成false
+      // 先将结果依赖的变量改成false
       this.isShowSearch = false
     }
   },

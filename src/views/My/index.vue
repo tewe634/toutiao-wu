@@ -2,7 +2,9 @@
   <div>
     <!-- 头部 -->
     <header>
-      <div class="login" v-if="isShow">登入的盒子</div>
+      <div class="login" v-if="isShow">登入的盒子
+      <van-button @click="$router.push('/user')" >编辑按钮</van-button>
+      </div>
       <div class="loginout" v-else>未登入的盒子</div>
     </header>
     <!-- 中间 -->

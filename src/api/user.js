@@ -15,3 +15,14 @@ export const getLogin = (data) =>
 // 短信验证 /v1_0/sms/codes/:mobile  get请求 参数mobile
 export const getCode = (mobile) =>
   request({ url: `/v1_0/sms/codes/${mobile}`, method: 'GET' })
+/**
+ * 获取用户自己的信息 /v1_0/user/profile
+ * @returns
+ */
+export const getInfo = () => request({ url: '/v1_0/user/profile' })
+//  编辑用户照片资料（头像、身份证照片） /v1_0/user/photo
+export const updataAouther = (file) => {
+  const fm = new FormData()
+  fm.append('photo', file)
+  return request({ url: '/v1_0/user/photo', method: 'PATCH', data: fm })
+}
