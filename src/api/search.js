@@ -11,5 +11,5 @@ export const getSearchSuggestionApi = (q) =>
  * @param {String} q
  * @returns
  */
-export const getSearchResultApi = (q) =>
-  request({ url: '/v1_0/search', params: { q } })
+export const getSearchResultApi = (q, page, perPage) =>
+  request({ url: '/v1_0/search', params: { q, page, perPage } })

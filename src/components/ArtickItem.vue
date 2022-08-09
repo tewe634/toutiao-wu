@@ -1,5 +1,5 @@
 <template>
-  <van-cell-group>
+  <van-cell-group @click="fn">
     <!-- 没有图片 -->
     <van-cell
       v-if="artickInfo.cover.type === 0"
@@ -23,7 +23,13 @@
       :label="label"
     >
       <template #default>
-        <van-image v-for="item,index in artickInfo.cover.images" :key="index" width="45" height="45" :src="item" />
+        <van-image
+          v-for="(item, index) in artickInfo.cover.images"
+          :key="index"
+          width="45"
+          height="45"
+          :src="item"
+        />
       </template>
     </van-cell>
   </van-cell-group>
@@ -38,6 +44,14 @@ export default {
       default: () => ({})
     }
   },
+  methods: {
+    fn() {
+      this.$router.push({
+        name: 'detail',
+        params: { id: this.artickInfo.art_id }
+      })
+    }
+  },
   computed: {
     label() {
       const art = this.artickInfo
@@ -47,6 +61,4 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>

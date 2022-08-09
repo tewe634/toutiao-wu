@@ -1,7 +1,11 @@
 /* eslint-disable no-undef */
 <template>
   <div>
-    <van-pull-refresh v-model="refreshing" @refresh="onLoad" success-text="刷新成功">
+    <van-pull-refresh
+      v-model="refreshing"
+      @refresh="onLoad"
+      success-text="刷新成功"
+    >
       <van-list
         v-model="loading"
         @load="onLoad"

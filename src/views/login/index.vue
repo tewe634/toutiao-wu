@@ -101,7 +101,6 @@ export default {
         this.$store.commit('SEND_TOKEN', token)
         this.$router.push('/my')
         this.$toast.success('登入成功')
-        console.log(2)
       } catch (error) {
         console.dir(error)
         const status = error.response.data

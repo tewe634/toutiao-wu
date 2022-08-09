@@ -12,7 +12,12 @@
         @cancel="$router.back()"
       />
       <!-- 动态组件显示历史建议结果 -->
-      <component :is="componentName" :keywords="keywords"></component>
+      <component
+        :is="componentName"
+        :keywords="keywords"
+        :resultList="resultList"
+        @done="done"
+      ></component>
     </form>
   </div>
 </template>
@@ -28,20 +33,24 @@ export default {
     return {
       keywords: '',
       isShowSearch: false, // 判断是否点击回车
-      resultList: []
+      resultList: JSON.parse(localStorage.getItem('results')) || []
     }
   },
   methods: {
     // 搜索时触发
     onSearch() {
       this.isShowSearch = true
-      this.resultList.push(this.keywords)
+      this.resultList.unshift(this.keywords)
+      this.resultList = [...new Set(this.resultList)]
       localStorage.setItem('results', JSON.stringify(this.resultList))
     },
     // 获取焦点
     onFocus() {
       // 先将结果依赖的变量改成false
       this.isShowSearch = false
+    },
+    done() {
+      this.resultList = JSON.parse(localStorage.getItem('results')) || []
     }
   },
   computed: {

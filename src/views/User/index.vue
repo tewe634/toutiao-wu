@@ -5,13 +5,19 @@
       <van-image round width="0.8rem" height="0.8rem" :src="userObj.photo" />
       <input type="file" hidden ref="inpt" accept=".png" @change="onChange" />
     </van-cell>
-    <van-cell title="昵称" is-link :value="userObj.name" />
+    <van-cell title="昵称" is-link :value="name" @click="showName = true" />
     <van-cell
       title="性别"
       is-link
       :value="userObj.gender === 1 ? '女' : '男'"
+      @click="showSex = true"
     />
-    <van-cell title="生日" is-link :value="userObj.birthday" />
+    <van-cell
+      @click="showTime = true"
+      title="生日"
+      is-link
+      :value="birthday"
+    />
     <!-- 弹出层 -->
     <van-popup
       class="avator-popup"
@@ -19,7 +25,20 @@
       :style="{ width: '100%', height: '100%' }"
       closeable
     >
-      <updata-aouther @updata-avator="userObj.photo = $event" :photo="photo" v-if="show"></updata-aouther>
+      <updata-aouther
+        @updata-avator="userObj.photo = $event"
+        :photo="photo"
+        v-if="show"
+      ></updata-aouther>
+    </van-popup>
+    <van-popup v-model="showName" position="bottom" :style="{ height: '100%' }">
+      <updata-name :name="name"></updata-name>
+    </van-popup>
+    <van-popup v-model="showSex" position="bottom" :style="{ height: '50%' }">
+      <updata-sex></updata-sex>
+    </van-popup>
+    <van-popup v-model="showTime" position="bottom" :style="{ height: '50%' }">
+      <updata-time ></updata-time>
     </van-popup>
   </div>
 </template>
@@ -28,14 +47,20 @@
 import { getInfo } from '@/api'
 import UpdataAouther from './compoenents/UpdataAouther.vue'
 import { resuletsImg } from '@/utils/photoImg'
+import UpdataName from './compoenents/updataName.vue'
+import UpdataSex from './compoenents/updataSex.vue'
+import UpdataTime from './compoenents/updataTime.vue'
 export default {
-  components: { UpdataAouther },
+  components: { UpdataAouther, UpdataName, UpdataSex, UpdataTime },
   name: 'User',
   data() {
     return {
       userObj: {},
       show: false,
-      photo: ''
+      photo: '',
+      showName: false,
+      showSex: false,
+      showTime: false
     }
   },
   methods: {
@@ -60,8 +85,16 @@ export default {
       this.show = true
     }
   },
-  created() {
+  mounted() {
     this.getUserInfo()
+  },
+  computed: {
+    name() {
+      return this.userObj?.name
+    },
+    birthday() {
+      return this.userObj?.birthday
+    }
   }
 }
 </script>

@@ -6,7 +6,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/login',
-    component: () => import('@/views/login')
+    component: () => import('@/views/login'),
+    meta: { index: 1 }
   },
   {
     path: '/',
@@ -23,7 +24,8 @@ const routes = [
       },
       {
         path: '/my',
-        component: () => import('@/views/My')
+        component: () => import('@/views/My'),
+        meta: { index: 2 }
       },
       {
         path: '/qa',
@@ -38,6 +40,11 @@ const routes = [
   {
     path: '/user',
     component: () => import('@/views/User')
+  },
+  {
+    path: '/detail/:id',
+    name: 'detail',
+    component: () => import('@/views/detail')
   }
 ]
 

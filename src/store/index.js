@@ -13,7 +13,6 @@ export default new Vuex.Store({
   getters: {},
   mutations: {
     SEND_TOKEN(state, payload) {
-      console.log(1)
       state.tokenObj = payload
       // localStorage.setItem('HEIMA_TOUTIAO_TOKEN', JSON.stringify(payload))
       // storage.set('HEIMA_TOUTIAO_TOKEN', payload)

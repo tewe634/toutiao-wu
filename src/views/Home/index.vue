@@ -43,9 +43,9 @@ import {
   delectChannel,
   addChannel,
   SetMyChannelToLocal,
-  getMyChannelBylocal
+  getMyChannelBylocal,
+  getChannel
 } from '@/api'
-import { getChannel } from '@/api/channel'
 import ArtickList from './ArtickList/index.vue'
 import Channel from './Channel/index.vue'
 export default {
@@ -66,10 +66,11 @@ export default {
   methods: {
     insertChannel() {
       if (this.isLoding) {
+        // 判断token
         this.getChannel()
       } else {
         const mychannel = getMyChannelBylocal()
-        if (mychannel.length !== 1) {
+        if (mychannel) {
           this.channel = mychannel
         } else {
           this.getChannel()
@@ -114,7 +115,7 @@ export default {
       })
       try {
         if (this.isLoding) {
-          await addChannel(item.id, this.channel.length)
+          await addChannel(item.id, this.channel?.length)
         } else {
           SetMyChannelToLocal([...this.channel, item])
         }

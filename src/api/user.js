@@ -26,3 +26,19 @@ export const updataAouther = (file) => {
   fm.append('photo', file)
   return request({ url: '/v1_0/user/photo', method: 'PATCH', data: fm })
 }
+
+// 编辑用户个人资料 /v1_0/user/profile
+export const updataUserInfo = (data) =>
+  request({ url: '/v1_0/user/profile', method: 'PATCH', data })
+//  /v1_0/user/followings 关注用户
+export const updataAttention = (data) =>
+  request({
+    url: '/v1_0/user/followings',
+    method: 'POST',
+    data
+  })
+//   /v1_0/user/followings/:target 取消关注用户
+export const updataCancel = (target) =>
+  request({ url: `/v1_0/user/followings/${target}`, method: 'DELETE' })
+//  /v1_0/user 获取用户自己信息
+export const getUsersInfo = () => request({ url: '/v1_0/user' })
