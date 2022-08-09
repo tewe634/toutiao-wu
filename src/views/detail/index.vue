@@ -125,12 +125,20 @@ export default {
     // 收藏or取消
     async getNewsCollect() {
       if (this.isCollet) {
-        const { data } = await getNewsCancel(this.artickId)
-        console.log(data)
+        try {
+          await getNewsCancel(this.artickId)
+          this.$toast.success('取消收藏~')
+        } catch (error) {
+          this.$toast.fail('取消失败')
+        }
       } else {
-        const data = { target: this.artickId }
-        const res = await getNewsCollect(data)
-        console.log(res)
+        try {
+          const data = { target: this.artickId }
+          await getNewsCollect(data)
+          this.$toast.success('收藏成功')
+        } catch (error) {
+          this.$toast.fail('收藏失败')
+        }
       }
       this.isCollet = !this.isCollet
     },
@@ -138,23 +146,40 @@ export default {
     async updataAttention() {
       const data = { target: this.artick.aut_id }
       if (this.isAttention) {
-        const res = await updataAttention(data)
-        console.log(res)
+        try {
+          await updataAttention(data)
+          this.$toast.success('关注成功~')
+        } catch (error) {
+          this.$toast.fail('关注失败~')
+        }
       } else {
-        const { data } = await updataCancel(this.artick.aut_id)
-        console.log(data)
+        try {
+          const { data } = await updataCancel(this.artick.aut_id)
+          console.log(data)
+          this.$toast.success('取消关注成功')
+        } catch (error) {
+          this.$toast.fail('取消关注失败')
+        }
       }
       this.isAttention = !this.isAttention
     },
     // 点赞文章
     async goodLike() {
       if (this.isLike) {
-        const { data } = await getRecusal(this.artickId)
-        console.log(data)
+        try {
+          await getRecusal(this.artickId)
+          this.$toast.success('取消点赞成功~')
+        } catch (error) {
+          this.$toast.fail('取消点赞失败~')
+        }
       } else {
-        const data = { target: this.artickId }
-        const res = await getLike(data)
-        console.log(res)
+        try {
+          const data = { target: this.artickId }
+          await getLike(data)
+          this.$toast.success('点赞文章成功~')
+        } catch (error) {
+          this.$toast.fail('点赞文章失败~')
+        }
       }
       this.isLike = !this.isLike
     },

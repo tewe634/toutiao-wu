@@ -16,7 +16,7 @@
         <div class="comment-content">{{ item.content }}</div>
         <div class="bottom-info">
           <span>{{ item.pubdate }}</span>
-          <van-button round type="default" @click="details(item)"
+          <van-button round type="default" size="mini" @click="details(item)"
             >回复{{ item.reply_count }}</van-button
           >
         </div>
@@ -25,10 +25,11 @@
         <van-button
           round
           type="default"
+          size="mini"
           @click="getLike(item.com_id)"
         >
           <van-icon name="good-job-o" />
-          {{item?.like_count ? item.like_count : '赞'}}
+          {{ item?.like_count ? item.like_count : '赞' }}
         </van-button>
       </template>
     </van-cell>
@@ -53,12 +54,20 @@ export default {
     // 点赞品论
     async getLike(id) {
       if (this.isLike) {
-        const data = { target: id }
-        const res = await getLikeApi(data)
-        console.log(res)
+        try {
+          const data = { target: id }
+          await getLikeApi(data)
+          this.$toast.success('点赞成功~')
+        } catch (error) {
+          this.$toast.fail('点赞失败~')
+        }
       } else {
-        const { data } = await getUnfollow(id)
-        console.log(data)
+        try {
+          await getUnfollow(id)
+          this.$toast.success('取消成功')
+        } catch (error) {
+          this.$toast.fail('取消失败')
+        }
       }
       this.isLike = !this.isLike
     },
