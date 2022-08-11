@@ -8,7 +8,9 @@ export default new Vuex.Store({
     // 至少返回一个空对象
     // JSON.parse(localStorage.getItem('HEIMA_TOUTIAO_TOKEN'))
     // tokenObj: storage.get('HEIMA_TOUTIAO_TOKEN') || {}
-    tokenObj: getToken() || {}
+    tokenObj: getToken() || {},
+    totalCount: '',
+    totalCounts: ''
   },
   getters: {},
   mutations: {
@@ -17,6 +19,18 @@ export default new Vuex.Store({
       // localStorage.setItem('HEIMA_TOUTIAO_TOKEN', JSON.stringify(payload))
       // storage.set('HEIMA_TOUTIAO_TOKEN', payload)
       setToken(payload)
+    },
+    totalCount(state, payload) {
+      state.totalCount = payload
+    },
+    totalCounts(state, payload) {
+      state.totalCounts = payload
+    },
+    totalCountAdd(state) {
+      state.totalCount = state.totalCount + 1
+    },
+    totalCountsAdd(state) {
+      state.totalCounts = state.totalCounts + 1
     }
   },
   actions: {},

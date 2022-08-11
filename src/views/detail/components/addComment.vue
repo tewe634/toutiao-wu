@@ -54,6 +54,7 @@ export default {
       } catch (error) {
         this.$toast.fail('添加评论失败~')
       }
+      this.$store.commit('totalCountsAdd')
     }
   }
 }

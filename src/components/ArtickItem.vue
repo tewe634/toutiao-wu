@@ -55,7 +55,9 @@ export default {
   computed: {
     label() {
       const art = this.artickInfo
-      return `${art.aut_name} ${art.is_top}评论 ${art.pubdate}`
+      return `${art.aut_name} ${art.is_top}评论 ${this.dayjs(
+        art.pubdate
+      ).fromNow()}`
     }
   }
 }

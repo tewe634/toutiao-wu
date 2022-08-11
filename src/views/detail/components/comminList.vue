@@ -15,19 +15,14 @@
         <div class="user-name">{{ item.aut_name }}</div>
         <div class="comment-content">{{ item.content }}</div>
         <div class="bottom-info">
-          <span>{{ item.pubdate | relativeTime }}</span>
+          <span>{{ dayjs(item.pubdate).fromNow()}}</span>
           <van-button round type="default" size="mini" @click="details(item)"
             >回复{{ item.reply_count }}</van-button
           >
         </div>
       </template>
       <template #right-icon>
-        <van-button
-          round
-          type="default"
-          size="mini"
-          @click="getLike(item.com_id)"
-        >
+        <van-button round type="default" size="mini" @click="getLike(item)">
           <van-icon name="good-job-o" />
           {{ item?.like_count ? item.like_count : '赞' }}
         </van-button>
@@ -37,7 +32,6 @@
 </template>
 
 <script>
-import '@/utils/dayjs'
 import { getLikeApi, getUnfollow, getNewsTrait } from '@/api'
 export default {
   data() {
@@ -45,7 +39,6 @@ export default {
       loading: false,
       finished: false,
       list: [],
-      isLike: true,
       offset: null,
       limit: 10
     }
@@ -53,24 +46,27 @@ export default {
   props: ['comId'],
   methods: {
     // 点赞品论
-    async getLike(id) {
-      if (this.isLike) {
+    async getLike(obj) {
+      if (!obj.is_liking) {
         try {
-          const data = { target: id }
+          const data = { target: obj.com_id }
           await getLikeApi(data)
           this.$toast.success('点赞成功~')
+          obj.like_count++
+          obj.is_liking = !obj.is_liking
         } catch (error) {
           this.$toast.fail('点赞失败~')
         }
       } else {
         try {
-          await getUnfollow(id)
+          await getUnfollow(obj.com_id)
           this.$toast.success('取消成功')
+          obj.like_count--
+          obj.is_liking = !obj.is_liking
         } catch (error) {
           this.$toast.fail('取消失败')
         }
       }
-      this.isLike = !this.isLike
     },
     // 滚动事件
     async onLoad() {
@@ -84,9 +80,11 @@ export default {
           }
           const { data } = await getNewsTrait(params)
           this.offset = data.data.last_id
-          this.$parent.totalCount = data.data.total_count
+          this.$store.commit('totalCount', data.data.total_count)
+          // this.$parent.totalCount = data.data.total_count
           if (data.data.results.length < 10) {
-            this.list = data.data.results
+            this.list.push(...data.data.results)
+            // this.list = data.data.results
             this.finished = true
             this.loading = false
           } else {
@@ -101,10 +99,10 @@ export default {
             limit: this.limit
           }
           const { data } = await getNewsTrait(params)
+          this.$store.commit('totalCounts', data.data.total_count)
           this.offset = data.data.last_id
-          this.$parent.totalCount = data.data.total_count
           if (data.data.results.length < 10) {
-            this.list = data.data.results
+            this.list.push(...data.data.results)
             this.finished = true
             this.loading = false
           } else {
@@ -119,26 +117,6 @@ export default {
     // 品论详情
     details(obj) {
       this.$bus.$emit('details', obj)
-    },
-    async one() {
-      const params = {
-        type: 'c',
-        source: this.comId,
-        offset: this.offset,
-        limit: this.limit
-      }
-      const { data } = await getNewsTrait(params)
-      this.list = data.data.results
-    },
-    async two() {
-      const params = {
-        type: 'a',
-        source: this.comId,
-        offset: this.offset,
-        limit: this.limit
-      }
-      const { data } = await getNewsTrait(params)
-      this.list = data.data.results
     }
   },
   mounted() {
@@ -148,14 +126,6 @@ export default {
   beforeDestroy() {
     this.$bus.$off('comment')
     this.$bus.$off('addList')
-  },
-  watch: {
-    // comId: {
-    //   immediate: true,
-    //   handler(val) {
-    //     console.log(val)
-    //   }
-    // }
   }
 }
 </script>

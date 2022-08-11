@@ -1,7 +1,7 @@
 <template>
   <van-popup v-model="shows" position="bottom" :style="{ height: '100%' }">
     <van-nav-bar
-      :title="num ? `${num}条回复` : '暂无回复'"
+      :title="totalCount ? `${totalCount}条回复` : '暂无回复'"
       left-arrow
       @click-left="shows = false"
     />
@@ -14,16 +14,16 @@
         <div class="user-name">{{ itemObj?.aut_name }}</div>
         <div class="comment-content">{{ itemObj?.content }}</div>
         <div class="bottom-info">
-          <span>{{ itemObj?.pubdate }}</span>
+          <span>{{ dayjs(itemObj.pubdate).fromNow() }}</span>
           <van-button round type="default"
-            >回复{{ itemObj?.reply_count }}</van-button
+            >回复{{ totalCount ? totalCount : 0 }}</van-button
           >
         </div>
       </template>
       <template #right-icon>
-        <van-button round type="default" @click="getLike(itemObj?.com_id)">
+        <van-button round type="default" @click="getLike">
           <van-icon name="good-job-o" />
-          赞
+          {{ itemObj?.like_count ? itemObj.like_count : '赞' }}
         </van-button>
       </template>
     </van-cell>
@@ -35,16 +35,14 @@
       ></add-comment>
     </van-popup>
     <van-cell title="全部回复" />
-    <commin-list
-      :comId="itemObj?.com_id"
-      @listLength="listLength"
-    ></commin-list>
+    <commin-list v-if="shows" :comId="itemObj?.com_id"></commin-list>
     <!-- 底部 -->
     <van-button type="default" block @click="discuss">评论</van-button>
   </van-popup>
 </template>
 
 <script>
+import { getLikeApi, getUnfollow } from '@/api'
 import AddComment from './addComment.vue'
 import ComminList from './comminList.vue'
 export default {
@@ -63,9 +61,31 @@ export default {
     },
     closeDone() {
       this.show = false
+      if (this.shows) {
+        this.$store.commit('totalCountAdd')
+      }
     },
-    listLength(num) {
-      this.num = num
+    async getLike() {
+      if (!this.itemObj.is_liking) {
+        try {
+          const data = { target: this.itemObj.com_id }
+          await getLikeApi(data)
+          this.$toast.success('点赞成功~')
+          this.itemObj.like_count++
+          this.itemObj.is_liking = !this.itemObj.is_liking
+        } catch (error) {
+          this.$toast.fail('点赞失败~')
+        }
+      } else {
+        try {
+          await getUnfollow(this.itemObj.com_id)
+          this.$toast.success('取消成功')
+          this.itemObj.like_count--
+          this.itemObj.is_liking = !this.itemObj.is_liking
+        } catch (error) {
+          this.$toast.fail('取消失败')
+        }
+      }
     }
   },
   mounted() {
@@ -73,6 +93,11 @@ export default {
       this.itemObj = val
       this.shows = true
     })
+  },
+  computed: {
+    totalCount() {
+      return this.$store.state.totalCount
+    }
   }
 }
 </script>

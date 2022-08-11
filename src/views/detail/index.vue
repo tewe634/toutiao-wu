@@ -22,7 +22,7 @@
         </van-col>
         <van-col span="13" type="flex" align="space-between">
           <p>{{ artick.aut_name }}</p>
-          <p>{{ artick.pubdate }}</p>
+          <p>{{ dayjs(artick.pubdate).fromNow() }}</p>
         </van-col>
         <van-col span="8" type="flex" justify="space-between" align="center">
           <van-button
@@ -37,8 +37,7 @@
       </van-row>
       <div class="markdown-body" v-html="artick.content"></div>
       <van-divider>正文结束</van-divider>
-      <commin-list
-      ></commin-list>
+      <commin-list></commin-list>
     </main>
     <footer>
       <van-row type="flex" justify="space-around" align="center">
@@ -48,7 +47,7 @@
           >
         </van-col>
         <van-col span="4">
-          <van-icon name="comment-o" :badge="totalCount" />
+          <van-icon name="comment-o" :badge="totalCounts" />
         </van-col>
         <van-col span="4">
           <van-icon
@@ -72,7 +71,7 @@
     <van-popup v-model="show" position="bottom" :style="{ height: '30%' }">
       <add-comment :artickId="artickId"></add-comment>
     </van-popup>
-    <comment-item></comment-item>
+    <comment-item ref="shows"></comment-item>
   </div>
 </template>
 <script>
@@ -103,7 +102,6 @@ export default {
       target: '',
       isAttention: true,
       isLike: false,
-      totalCount: 0,
       show: false,
       isShows: this.shows
     }
@@ -196,6 +194,9 @@ export default {
   computed: {
     artickId() {
       return this.$route.params.id
+    },
+    totalCounts() {
+      return this.$store.state.totalCounts
     }
   }
 }
