@@ -15,7 +15,7 @@
         <div class="user-name">{{ item.aut_name }}</div>
         <div class="comment-content">{{ item.content }}</div>
         <div class="bottom-info">
-          <span>{{ item.pubdate }}</span>
+          <span>{{ item.pubdate | relativeTime }}</span>
           <van-button round type="default" size="mini" @click="details(item)"
             >回复{{ item.reply_count }}</van-button
           >
@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import '@/utils/dayjs'
 import { getLikeApi, getUnfollow, getNewsTrait } from '@/api'
 export default {
   data() {
@@ -118,6 +119,26 @@ export default {
     // 品论详情
     details(obj) {
       this.$bus.$emit('details', obj)
+    },
+    async one() {
+      const params = {
+        type: 'c',
+        source: this.comId,
+        offset: this.offset,
+        limit: this.limit
+      }
+      const { data } = await getNewsTrait(params)
+      this.list = data.data.results
+    },
+    async two() {
+      const params = {
+        type: 'a',
+        source: this.comId,
+        offset: this.offset,
+        limit: this.limit
+      }
+      const { data } = await getNewsTrait(params)
+      this.list = data.data.results
     }
   },
   mounted() {
@@ -129,13 +150,12 @@ export default {
     this.$bus.$off('addList')
   },
   watch: {
-    list: {
-      deep: true,
-      immediate: true,
-      handler() {
-        this.$emit('listLength', this.list.length)
-      }
-    }
+    // comId: {
+    //   immediate: true,
+    //   handler(val) {
+    //     console.log(val)
+    //   }
+    // }
   }
 }
 </script>

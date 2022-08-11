@@ -102,7 +102,6 @@ export default {
         this.$router.push('/my')
         this.$toast.success('登入成功')
       } catch (error) {
-        console.dir(error)
         const status = error.response.data
         let message = '请重新登入'
         if (status === 400) {

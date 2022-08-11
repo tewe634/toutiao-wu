@@ -37,7 +37,8 @@
       </van-row>
       <div class="markdown-body" v-html="artick.content"></div>
       <van-divider>正文结束</van-divider>
-      <commin-list></commin-list>
+      <commin-list
+      ></commin-list>
     </main>
     <footer>
       <van-row type="flex" justify="space-around" align="center">
@@ -103,7 +104,8 @@ export default {
       isAttention: true,
       isLike: false,
       totalCount: 0,
-      show: false
+      show: false,
+      isShows: this.shows
     }
   },
   methods: {
@@ -246,6 +248,9 @@ footer {
       .active {
         color: rgb(50, 150, 250);
       }
+    }
+    .van-icon {
+      font-size: 0.64rem;
     }
   }
 }
